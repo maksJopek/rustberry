@@ -48,10 +48,10 @@ title="$(echo $title | sed 's/\ /-/g')"
 # Shorten title
 IFS='-' read -ra title_array <<< "$title"
 
-if [ ${#title_array[@]} -gt 1 ]; then
+if [ ${#title_array[@]} -gt 4 ]; then
 	title=""
 
-	for num in {0..1} 
+	for num in {0..3} 
 	do
 		if [[ "$title" == "" ]]; then
 			title="${title_array[num]}"
