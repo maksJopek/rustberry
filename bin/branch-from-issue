@@ -1,0 +1,76 @@
+#!/bin/sh
+# Check if gh and jq are installed
+gh --version >/dev/null || { echo 'You need to install github client to use this script'; exit 0; }
+jq --version >/dev/null || { echo 'You need to install jq to use this script'; exit 0; }
+
+# Display issue list
+gh issue list -L 50 2>/dev/null || { echo 'Not in a git repository'; exit 0; }
+
+# Get issue number
+# TODO: Add searching option if user didn't see their issue
+printf '# Sellect issue\n'
+read issue
+
+# Check if issue with given number exist
+# gh issue list --json number | grep "$issue" >/dev/null || { echo 'Wrong issue number'; exit 0; }
+gh issue view $issue 2>/dev/null || { echo 'Wrong issue number'; exit 0; }
+
+# Get assignee
+printf '# Who should be assigned to this issue (login or @me)\n'
+read assignee
+
+# Default
+if [[ "$assignee" == "" ]]; then
+	assignee="@me"
+fi
+
+# Get short
+printf '# Enter repo shortcut\n'
+read short
+
+# Default
+if [[ "$short" == "" ]]; then
+	short="RB"
+fi
+
+# Get repo link
+link=$(git config --get remote.origin.url)
+link=$(echo $link | sed 's/git@github.com:/https:\/\/github.com\//;s/\.git//')
+
+# Get issue label and title
+json="$(gh issue view $issue --json labels,title)"
+label="$(echo $json | jq -r '.labels[0].name')"
+title="$(echo $json | jq -r '.title')"
+
+# Remove white space from title
+title="$(echo $title | sed 's/\ /-/g')"
+
+# Shorten title
+IFS='-' read -ra title_array <<< "$title"
+
+if [ ${#title_array[@]} -gt 1 ]; then
+	title=""
+
+	for num in {0..1} 
+	do
+		if [[ "$title" == "" ]]; then
+			title="${title_array[num]}"
+		else
+			title="$title-${title_array[num]}"
+		fi
+	done
+fi
+
+# Set branch name
+branch="$label/$short-$issue|$title"
+
+echo "$assignee is going to be assigned to this issue"
+echo "New branch will be created ($branch)" 
+echo 'Press any button to confirm'
+read
+
+# Magic here
+git checkout develop && git pull origin develop && git checkout -b "$branch" &&\
+gh issue edit $issue --add-assignee $assignee &&\
+gh issue comment $issue -b "#### Started work on branch [$branch]($link/tree/$branch)" &&\
+git push -u origin "$branch"
