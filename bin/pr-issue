@@ -24,7 +24,7 @@ desc="Close #$issue"
 echo "Title: $pr_title"
 echo "Issue: $issue"
 echo "Description: $desc<br>$user_desc"
-echo "Press anything to continua"
+echo "Press anything to continue"
 read
 
 # Magic
