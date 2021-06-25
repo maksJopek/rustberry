@@ -20,5 +20,12 @@ read user_issue
 # Link to issue
 desc="Close #$issue"
 
+# Final check
+echo "Title: $pr_title"
+echo "Issue: $issue"
+echo "Description: $desc<br>$user_desc"
+echo "Press anything to continua"
+read
+
 # Magic
 gh pr create -t "$pr_title" -B develop -b "$desc<br>$user_desc"
