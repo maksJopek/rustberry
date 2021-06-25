@@ -1,18 +1,16 @@
 #!/bin/sh
 # Check if gh and jq are installed
-gh --version >/dev/null || { echo 'You need to install github client to use this script'; exit 0; }
-jq --version >/dev/null || { echo 'You need to install jq to use this script'; exit 0; }
+gh --version >/dev/null 2>/dev/null || { echo 'You need to install github client to use this script'; exit 0; }
+jq --version >/dev/null 2>/dev/null || { echo 'You need to install jq to use this script'; exit 0; }
 
 # Display issue list
 gh issue list -L 50 2>/dev/null || { echo 'Not in a git repository'; exit 0; }
 
 # Get issue number
-# TODO: Add searching option if user didn't see their issue
-printf '# Sellect issue\n'
+printf '# Select issue\n'
 read issue
 
 # Check if issue with given number exist
-# gh issue list --json number | grep "$issue" >/dev/null || { echo 'Wrong issue number'; exit 0; }
 gh issue view $issue 2>/dev/null || { echo 'Wrong issue number'; exit 0; }
 
 # Get assignee
@@ -20,18 +18,14 @@ printf '# Who should be assigned to this issue (login or @me)\n'
 read assignee
 
 # Default
-if [[ "$assignee" == "" ]]; then
-	assignee="@me"
-fi
+[[ "$assignee" == "" ]] && assignee="@me"
 
 # Get short
 printf '# Enter repo shortcut\n'
 read short
 
 # Default
-if [[ "$short" == "" ]]; then
-	short="RB"
-fi
+[[ "$short" == "" ]] && short="RB"
 
 # Get repo link
 link=$(git config --get remote.origin.url)
@@ -43,7 +37,7 @@ label="$(echo $json | jq -r '.labels[0].name')"
 title="$(echo $json | jq -r '.title')"
 
 # Remove white space from title
-title="$(echo $title | sed 's/\ /-/g')"
+title="$(echo $title | sed 's/\s/-/g')"
 
 # Shorten title
 IFS='-' read -ra title_array <<< "$title"
