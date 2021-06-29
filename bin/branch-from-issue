@@ -12,7 +12,7 @@ read issue
 
 # If issue not found
 # Searching until user found their issue
-while [[ "$issue" == "0" ]] ; do
+while [[ "$issue" == "0"  || "$issue" == "" ]] ; do
 	echo "# Search issue by string"
 	read string
 
