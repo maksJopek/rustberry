@@ -1,20 +1,21 @@
 #!/bin/sh
 # Check if gh is installed
-gh --version >/dev/null || { echo 'You need to install github client to use this script'; exit 0; }
+gh --version >/dev/null 2>/dev/null || { echo 'You need to install github client to use this script'; exit 0; }
 
 # Get pull request description
-echo "Add description (new line as <br>)"
-read user_desc
+echo "Add description (Y/n)"
+read choice
+[[ ! "$choice" == "n" ]] && nvim pr-script-temp && user_desc="$(cat pr-script-temp)" && rm pr-script-temp
 
 # Get pull request name
-pr_title="$(git branch | grep \* | sed 's/\*\ //')"
+pr_title="$(git branch --show-current || git branch | grep \* | sed 's/\*\ //')"
 echo "Title (default $pr_title)"
 read user_pr
 
 [[ "$user_pr" == "" ]] || pr_title="$user_pr"
 
 # Get issue
-issue="$(echo $pr_title | grep -oP '(?!\-)\d+(?=\|)')"
+issue="$(echo $pr_title | grep -oP '(?!\-)\d+(?=\|)') ($(echo $pr_title | grep -oP '(?<=\|).+'))"
 echo "Issue (default $issue)"
 read user_issue
 
@@ -26,7 +27,7 @@ desc="Close #$issue"
 # Final check
 echo "Title: $pr_title"
 echo "Issue: $issue"
-echo "Description: $desc<br>$user_desc"
+printf "Description: \"$desc\n$user_desc\"\n"
 echo "Press anything to continue"
 read
 
