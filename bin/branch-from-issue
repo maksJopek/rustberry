@@ -7,8 +7,19 @@ jq --version >/dev/null 2>/dev/null || { echo 'You need to install jq to use thi
 gh issue list -L 50 2>/dev/null || { echo 'Not in a git repository'; exit 0; }
 
 # Get issue number
-printf '# Select issue\n'
+printf '# Select issue (0 if your issue is not on the list)\n'
 read issue
+
+# If issue not found
+# Searching until user found their issue
+while [[ "$issue" == "0"  || "$issue" == "" ]] ; do
+	echo "# Search issue by string"
+	read string
+
+	gh issue list -S "$string"
+	printf '# Select issue (0 if your issue is not on the list)\n'
+	read issue
+done
 
 # Check if issue with given number exist
 gh issue view $issue 2>/dev/null || { echo 'Wrong issue number'; exit 0; }
