@@ -9,7 +9,7 @@ printf "$branches\n"
 read -r selection
 
 # Getting branch name
-branch="$(printf "%s\n" "$branches" | grep '^\['"$selection" | sed --posix -E 's/\[.\][[:space:]]//g')"
+branch="$(printf "%s\n" "$branches" | grep '^\['"$selection" | sed -E 's/\[.\][[:space:]]//g')"
 
 # Switching branch
 git checkout "$branch"
