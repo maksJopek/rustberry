@@ -49,7 +49,7 @@ title=$(echo "$json" | jq -r '.title')
 
 # Shorten title and replace \s with -
 title=$(echo "$title" | grep -oP '^(\w+\s?){4}')
-title=$(echo "$title" | sed 's/\s/-/g')
+title=$(echo "$title" | sed 's/[[:space:]]/-/g')
 
 # Set branch name
 branch="$label/$short-$issue|$title"
