@@ -47,7 +47,7 @@ json=$(gh issue view "$issue" --json labels,title)
 label=$(echo "$json" | jq -r '.labels[0].name')
 title=$(echo "$json" | jq -r '.title')
 
-# Shorten title and remplace \s with -
+# Shorten title and replace \s with -
 title=$(echo "$title" | grep -oP '^(\w+\s?){1,4}')
 title=$(echo "$title" | sed 's/\s/-/g')
 
