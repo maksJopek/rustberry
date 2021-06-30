@@ -7,9 +7,9 @@ gh auth status >/dev/null 2>/dev/null || { echo 'You need to login to gh to use 
 
 # Get pull request description
 echo "Add description (Y/n)"
-read choice
+read -r choice
 
-if [[ ! "$choice" == "n" ]]; then
+if [ ! "$choice" = "n" ]; then
 	# Text editors
 	nvim ps-script-temp 2>/dev/null || \
 	vim ps-script-temp 2>/dev/null || \
@@ -22,19 +22,19 @@ fi
 
 
 # Get pull request name
-branch="$(git branch --show-current || git branch | grep \* | sed 's/\*\ //')"
+branch="$(git branch --show-current || git branch | grep '\*' | sed 's/\*[[:space:]]//')"
 pr_title="$branch"
 echo "Title (default $pr_title)"
-read user_pr
+read -r user_pr
 
-[[ "$user_pr" == "" ]] || pr_title="$user_pr"
+[ "$user_pr" = "" ] || pr_title="$user_pr"
 
 # Get issue
-issue="$(echo $branch | grep -oP '(?!\-)\d+(?=\|)') ($(echo $branch | grep -oP '(?<=\|).+'))"
+issue="$(echo "$branch" | grep -oP '(?!\-)\d+(?=\|)') ($(echo "$branch" | grep -oP '(?<=\|).+'))"
 echo "Issue (default $issue)"
-read user_issue
+read -r user_issue
 
-[[ "$user_issue" == "" ]] || issue="$user_issue"
+[ "$user_issue" = "" ] || issue="$user_issue"
 
 # Link to issue
 desc="Close #$issue"
@@ -42,9 +42,9 @@ desc="Close #$issue"
 # Final check
 echo "Title: $pr_title"
 echo "Issue: $issue"
-printf "Description: \"$desc\n$user_desc\"\n"
+printf "Description: \"%s\n%s\"\n" "$desc""$user_desc"
 echo "Press anything to continue"
-read
+read -r
 
 # Magic
 gh pr create -t "$pr_title" -B develop -b "$desc$user_desc"

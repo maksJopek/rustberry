@@ -11,63 +11,48 @@ gh issue list -L 50 2>/dev/null || { echo 'Not in a git repository'; exit 0; }
 
 # Get issue number
 printf '# Select issue (0 if your issue is not on the list)\n'
-read issue
+read -r issue
 
 # If issue not found
 # Searching until user found their issue
-while [[ "$issue" == "0"  || "$issue" == "" ]] ; do
+while [ "$issue" = "0" ] || [ "$issue" = "" ] ; do
 	echo "# Search issue by string"
-	read string
+	read -r string
 
 	gh issue list -S "$string"
 	printf '# Select issue (0 if your issue is not on the list)\n'
-	read issue
+	read -r issue
 done
 
 # Check if issue with given number exist
-gh issue view $issue 2>/dev/null || { echo 'Wrong issue number'; exit 0; }
+gh issue view "$issue" 2>/dev/null || { echo 'Wrong issue number'; exit 0; }
 
 # Get assignee
 printf '# Who should be assigned to this issue (login or @me)\n'
-read assignee
+read -r assignee
 
 # Default
-[[ "$assignee" == "" ]] && assignee="@me"
+[ "$assignee" = "" ] && assignee="@me"
 
 # Get short
 printf '# Enter repo shortcut\n'
-read short
+read -r short
 
 # Default
-[[ "$short" == "" ]] && short="RB"
+[ "$short" = "" ] && short="RB"
 
 # Get repo link
 link=$(git config --get remote.origin.url)
-link=$(echo $link | sed 's/git@github.com:/https:\/\/github.com\//;s/\.git//')
+link=$(echo "$link" | sed 's/git@github.com:/https:\/\/github.com\//;s/\.git//')
 
 # Get issue label and title
-json="$(gh issue view $issue --json labels,title)"
-label="$(echo $json | jq -r '.labels[0].name')"
-title="$(echo $json | jq -r '.title')"
+json=$(gh issue view "$issue" --json labels,title)
+label=$(echo "$json" | jq -r '.labels[0].name')
+title=$(echo "$json" | jq -r '.title')
 
-# Remove white space from title
-title="$(echo $title | sed 's/\s/-/g')"
-
-# Shorten title
-IFS='-' read -ra title_array <<< "$title"
-
-if [ ${#title_array[@]} -gt 4 ]; then
-	title=""
-
-	for num in {0..3} 
-	do
-		if [[ "$title" == "" ]]; then
-			title="${title_array[num]}"
-		else
-			title="$title-${title_array[num]}"
-		fi
-	done
-fi
+# Shorten title and replace \s with -
+title=$(echo "$title" | grep -oP '^(\w+\s?){4}')
+title=$(echo "$title" | sed 's/[[:space:]]/-/g')
 
 # Set branch name
 branch="$label/$short-$issue|$title"
@@ -75,10 +60,10 @@ branch="$label/$short-$issue|$title"
 echo "$assignee is going to be assigned to this issue"
 echo "New branch will be created ($branch)" 
 echo 'Press any button to confirm'
-read
+read -r
 
 # Magic here
 git checkout develop && git pull origin develop && git checkout -b "$branch" &&\
-gh issue edit $issue --add-assignee $assignee &&\
-gh issue comment $issue -b "#### Started work on branch [$branch]($link/tree/$branch)" &&\
+gh issue edit "$issue" --add-assignee "$assignee" &&\
+gh issue comment "$issue" -b "#### Started work on branch [$branch]($link/tree/$branch)" &&\
 git push -u origin "$branch"

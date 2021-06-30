@@ -1,24 +1,15 @@
 #!/bin/sh
-# Creating array of branches
-branch_array=($(git branch | sed 's/\*//g' | tr "\n" "\n"))
-number=0
-len=(${#branch_array[@]})
+# List branches
+branches="$(git branch | sed 's/\*//g')"
+branches="$(echo $branches | sed 's/[[:space:]]/\n/g' | awk '{print "[" NR-1 "]", $0}')" # Not working with "$branches"
 
-if [ $len -ge 25 ] && which dmenu >/dev/null 2>/dev/null; then
-	# Dmenu options, if list is too big
-	git branch | dmenu | xargs git checkout
-else
-	for i in "${branch_array[@]}"
-	do
-		echo "[$number] $i"
-		((number=number+1))
-	done
+# Branch selection
+echo "# Select branch"
+printf "$branches\n"
+read -r selection
 
-	# Branch selection
-	echo "Select branch"
-	read selection
+# Getting branch name
+branch="$(printf "%s\n" "$branches" | grep '^\['"$selection" | sed -E 's/\[.\][[:space:]]//g')"
 
-	branch=( ${branch_array[$selection]} )
-
-	git checkout "$branch"
-fi
+# Switching branch
+git checkout "$branch"
