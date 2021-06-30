@@ -2,6 +2,9 @@
 # Check if gh is installed
 gh --version >/dev/null 2>/dev/null || { echo 'You need to install github client to use this script'; exit 0; }
 
+# Check if user is loged in gh
+gh auth status >/dev/null 2>/dev/null || { echo 'You need to login to gh to use this script (gh auth login)'; exit 0; }
+
 # Get pull request description
 echo "Add description (Y/n)"
 read choice

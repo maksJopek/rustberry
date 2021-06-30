@@ -3,6 +3,9 @@
 gh --version >/dev/null 2>/dev/null || { echo 'You need to install github client to use this script'; exit 0; }
 jq --version >/dev/null 2>/dev/null || { echo 'You need to install jq to use this script'; exit 0; }
 
+# Check if user is loged in gh
+gh auth status >/dev/null 2>/dev/null || { echo 'You need to login to gh to use this script (gh auth login)'; exit 0; }
+
 # Display issue list
 gh issue list -L 50 2>/dev/null || { echo 'Not in a git repository'; exit 0; }
 
