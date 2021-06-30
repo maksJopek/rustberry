@@ -19,7 +19,7 @@ fi
 
 
 # Get pull request name
-branch="$(git branch --show-current || git branch | grep '\*' | sed 's/\*\ //')"
+branch="$(git branch --show-current || git branch | grep '\*' | sed 's/\*[[:space:]]//')"
 pr_title="$branch"
 echo "Title (default $pr_title)"
 read -r user_pr
