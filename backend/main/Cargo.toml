@@ -1,20 +1,8 @@
 [package]
-name = "rustberry"
+name = "main"
 version = "0.1.0"
 edition = "2018"
-
-[[bin]]
-bench = false
-path = "main/src/main.rs"
-name = "rustberry_api"
-
-[workspace]
-members = [
-  "main",
-]
 
 [dependencies]
 actix-web = { version = "3", features = ["openssl"] }
 openssl = { version = "0.10", features = ["v110"] }
-
-[features]
