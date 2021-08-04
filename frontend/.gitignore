@@ -1,0 +1,11 @@
+node_modules/
+dist/
+wasm/pkg/
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+yarn-debug.log*
+yarn-error.log*
