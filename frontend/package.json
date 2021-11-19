@@ -1,0 +1,31 @@
+{
+  "name": "rustberry-front",
+  "version": "0.0.0",
+  "license": "AGPL-3.0-or-later",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview",
+    "lint": "eslint 'src/**/*.{js,vue,ts}'"
+  },
+  "dependencies": {
+    "vue": "^3.2.22",
+    "vue-class-component": "^8.0.0-rc.1",
+    "vue-property-decorator": "^10.0.0-rc.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "@vitejs/plugin-vue": "^1.9.4",
+    "@vue/compiler-sfc": "^3.2.22",
+    "@vue/eslint-config-airbnb": "^6.0.0",
+    "@vue/eslint-config-typescript": "^9.1.0",
+    "eslint": "^8.2.0",
+    "eslint-plugin-vue": "^8.1.1",
+    "eslint-plugin-vuejs-accessibility": "^1.1.0",
+    "sass": "^1.43.4",
+    "typescript": "^4.5.2",
+    "vite": "npm:@knightly/vite@^1.0.0-knightly-pr904.202010140014",
+    "vue-tsc": "^0.3.0"
+  }
+}

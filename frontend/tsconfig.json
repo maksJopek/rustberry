@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "lib": [
+      "esnext",
+      "dom",
+    ],
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": [
+        "./*",
+      ],
+      "Components/*": [
+        "components/*",
+      ],
+      "Wasm": [
+        "wasm/*",
+      ],
+      "Ruster": [
+        "ruster/*",
+      ]
+    },
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.d.ts",
+    "./src/**/*.vue",
+    "./.eslintrc.js",
+    "./vite.config.ts",
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+  ],
+}
